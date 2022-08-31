@@ -1,5 +1,7 @@
 package com.example.apitest.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.example.apitest.Dao.DamageDetectMessage;
 import com.example.apitest.Entity.ResultFromDetection;
 import com.example.apitest.utils.EnvironmentPath;
@@ -24,7 +26,8 @@ import java.util.Random;
 public class ExecuteAlgorithmService {
     // 默认的python算法文件的位置
     private String detectionExeFilePath;// = "H:\\Anaconda\\Anaconda3\\envs\\welddetection\\python.exe H:\\LabelProject\\code\\PyTorch-YOLOv3-master\\detect_oneImage.py";//
-
+    private String EdgedetectionExeFilePath; // /anaconda/bin/python  ./UNet3_plus-main/eval_img.py --output_folder ./output --checkpoint checkpoints/2022-07-28_22_18_11/chk_499.pth --img_path
+    private String OCRdetectionExeFilePath; // /anaconda/bin/python  ./yolov5-master/detect.py --weights runs/best_exp/weights/best.pt --imgsz 640 --hide-conf --exist-ok --source 
     private Logger logger = LoggerFactory.getLogger(getClass());
     public ExecuteAlgorithmService() {
         this.detectionExeFilePath = EnvironmentPath.getInstance().getPythonExEPath() +
@@ -48,6 +51,8 @@ public class ExecuteAlgorithmService {
 //                detectionExeFilePath = configStr;
 //            }
 //        }
+    this.EdgedetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和边缘检测文件。
+    this.OCRdetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和OCR检测文件。
     }
 
     /**
@@ -156,15 +161,14 @@ public class ExecuteAlgorithmService {
         // 执行python脚本   H:\Anaconda\Anaconda3\envs\welddetection\python.exe H:\LabelProject\code\PyTorch-YOLOv3-master\detect_oneImage.py E:\IDEA\apitest\src\main\resources\static\\upload\1332420190611043817.tif
         long startTime =  System.currentTimeMillis();
 //        System.out.println("---------------------------------------------开始执行脚本---------------------------------------------");
-        logger.info("---开始执行脚本---");
+        logger.info("---开始执行缺陷检测脚本---");
         Runtime mt =Runtime.getRuntime();
 
         String args = detectionExeFilePath + " " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         try {
             Process pr = mt.exec(args);
             System.out.println(args+'\n');
-//            BufferedReader in = new BufferedReader(new InputStreamReader(
-//                    pr.getInputStream()));
+
             InputStreamReader ir = new InputStreamReader(pr.getInputStream());
             LineNumberReader in = new LineNumberReader(ir);
             String line;
@@ -252,6 +256,71 @@ public class ExecuteAlgorithmService {
 
         } catch (IOException e) {
             logger.error("---执行检测算法的时候出错---");
+            logger.error(e.getMessage());
+        }
+
+
+        logger.info("---开始执行OCR脚本---");
+        Runtime mt_ocr =Runtime.getRuntime();
+        String args_ocr = OCRdetectionExeFilePath + " " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String houdu = null;
+        try {
+            Process pr = mt_ocr.exec(args_ocr);
+            System.out.println(args_ocr+'\n');
+
+            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
+            LineNumberReader in = new LineNumberReader(ir);
+            String line_ocr;
+            while((line_ocr=in.readLine()) != null) // {"T":"18"}
+            {
+                JSONObject json_houdu = JSON.parseObject(line_ocr);
+                houdu = json_houdu.get("T").toString();
+                resultFromDetection.setHoudu(houdu);
+            }
+
+
+            in.close();
+            pr.waitFor();
+            pr.destroy();
+        }catch (InterruptedException e) {
+//
+            logger.error("---执行OCR算法的时候出错---");
+            logger.error(e.getMessage());
+
+        } catch (IOException e) {
+            logger.error("---执行OCR算法的时候出错---");
+            logger.error(e.getMessage());
+        }
+
+
+        logger.info("---开始执行边缘检测脚本---");
+        Runtime mt_edge =Runtime.getRuntime();
+        String args_edge = EdgedetectionExeFilePath + " " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        
+        try {
+            Process pr = mt_edge.exec(args_ocr);
+            System.out.println(args_edge+'\n');
+
+            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
+            LineNumberReader in = new LineNumberReader(ir);
+            String line_edge;
+            while((line_edge=in.readLine()) != null) // 121,244 122,244
+            {
+                String[] all_edges = line_edge.split(":");
+                resultFromDetection.setEdge(all_edges);
+            }
+
+
+            in.close();
+            pr.waitFor();
+            pr.destroy();
+        }catch (InterruptedException e) {
+//
+            logger.error("---执行OCR算法的时候出错---");
+            logger.error(e.getMessage());
+
+        } catch (IOException e) {
+            logger.error("---执行OCR算法的时候出错---");
             logger.error(e.getMessage());
         }
 
