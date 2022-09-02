@@ -34,6 +34,15 @@ import java.util.List;
 @Service
 public class RetrainModelService {
 //    private static volatile RetrainModelService instance;
+    public trainingThread trainThread;
+    public static volatile int epoch;
+    public trainingThread getTrainThread() {
+        return trainThread;
+    }
+
+    public void setTrainThread(trainingThread trainThread) {
+        this.trainThread = trainThread;
+    }
 
     @Autowired
     private DamageImageMapper damageImageMapper;
@@ -433,9 +442,21 @@ public class RetrainModelService {
         return isTraining;
     }
 
-    public void setTraining(boolean training) {
+    public void setTraining(boolean training){
         isTraining = training;
     }
+    public void setTrainingF(boolean training , int type) {
+        if(type == 0){
+            //开始线程
+            trainThread = new trainingThread();
+            trainThread.start();
+        }
+        else{
+            trainThread.stop();
+        }
+        isTraining = training;
+    }
+
 
 
 }

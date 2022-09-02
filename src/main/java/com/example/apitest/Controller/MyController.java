@@ -55,6 +55,7 @@ public class MyController {
 //        return uploadFolderPath;
 //    }
 
+
     @GetMapping("/test")
     public String  Test(){
 //        String xmlFolderPath = "H:\\LabelProject\\20190516\\dataset_stage1\\augtif\\retrainTestData\\xmlTest";
@@ -89,6 +90,19 @@ public class MyController {
  //       return"success";
  //   }
 
+    @PostMapping("/retrainT")
+    public boolean retrainT(){
+        retrainModelService.setTrainingF(true,0);
+        return retrainModelService.isTraining();
+
+    }
+
+    @PostMapping("/retrainF")
+    public boolean retrainF(){
+        retrainModelService.setTrainingF(false,1);
+        return retrainModelService.isTraining();
+
+    }
     /**
      * 重新训练模型的接口
      * @return ReturnMessage类型的执行结果
@@ -128,6 +142,12 @@ public class MyController {
 
         logger.info("istraining: "+RetrainModelService.isTraining);
         return RetrainModelService.isTraining;
+    }
+    @PostMapping("/epoch")
+    public int epoch(){
+
+
+        return RetrainModelService.epoch;
     }
 
 
@@ -247,7 +267,7 @@ public class MyController {
     //修改：返回值与res类别
     @PostMapping("/detectuploadfile_v2")
     @ResponseBody
-    public ResultFromDetection upload_v2(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    public ResultFromDetection upload_v2(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
         System.out.println("调用//upload接口中的参数");
 
         ResultFromDetection res = null;

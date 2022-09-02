@@ -32,6 +32,10 @@ public class ExecuteAlgorithmService {
     public ExecuteAlgorithmService() {
         this.detectionExeFilePath = EnvironmentPath.getInstance().getPythonExEPath() +
                 " "+ EnvironmentPath.getInstance().getDetectionPythonFilePath();
+        this.EdgedetectionExeFilePath = EnvironmentPath.getInstance().getPythonExEPath() +
+                " "+ EnvironmentPath.getInstance().getEdgedetectionExeFilePath();
+        this.OCRdetectionExeFilePath = EnvironmentPath.getInstance().getPythonExEPath() +
+                " "+ EnvironmentPath.getInstance().getOCRdetectionExeFilePath();
 //        // 默认读取的配置文件名称
 //        String configFilePath = "config.txt";
 //        File directory = new File("..");
@@ -51,8 +55,8 @@ public class ExecuteAlgorithmService {
 //                detectionExeFilePath = configStr;
 //            }
 //        }
-    this.EdgedetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和边缘检测文件。
-    this.OCRdetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和OCR检测文件。
+//    this.EdgedetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和边缘检测文件。
+//    this.OCRdetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和OCR检测文件。
     }
 
     /**
@@ -262,26 +266,29 @@ public class ExecuteAlgorithmService {
 
         logger.info("---开始执行OCR脚本---");
         Runtime mt_ocr =Runtime.getRuntime();
-        String args_ocr = OCRdetectionExeFilePath + " " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String args_ocr = "cmd /c cd D: && conda activate ML_env"+"&&" + OCRdetectionExeFilePath + " " +"--source" +" "+ filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         String houdu = null;
         try {
-            Process pr = mt_ocr.exec(args_ocr);
+            Process pr1 = mt_ocr.exec(args_ocr);
             System.out.println(args_ocr+'\n');
 
-            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
-            LineNumberReader in = new LineNumberReader(ir);
+            InputStreamReader ir1 = new InputStreamReader(pr1.getInputStream());
+            LineNumberReader in1 = new LineNumberReader(ir1);
+            in1.setLineNumber(3);
             String line_ocr;
-            while((line_ocr=in.readLine()) != null) // {"T":"18"}
+            line_ocr=in1.readLine();
+            while((line_ocr=in1.readLine()) != null) // {"T":"18"}
             {
+                System.out.println(line_ocr);
                 JSONObject json_houdu = JSON.parseObject(line_ocr);
                 houdu = json_houdu.get("T").toString();
                 resultFromDetection.setHoudu(houdu);
             }
 
 
-            in.close();
-            pr.waitFor();
-            pr.destroy();
+            in1.close();
+            pr1.waitFor();
+            pr1.destroy();
         }catch (InterruptedException e) {
 //
             logger.error("---执行OCR算法的时候出错---");
@@ -295,10 +302,10 @@ public class ExecuteAlgorithmService {
 
         logger.info("---开始执行边缘检测脚本---");
         Runtime mt_edge =Runtime.getRuntime();
-        String args_edge = EdgedetectionExeFilePath + " " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String args_edge = "cmd /c cd D: && conda activate ML_env"+"&&" +EdgedetectionExeFilePath + " --img_path " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         
         try {
-            Process pr = mt_edge.exec(args_ocr);
+            Process pr = mt_edge.exec(args_edge);
             System.out.println(args_edge+'\n');
 
             InputStreamReader ir = new InputStreamReader(pr.getInputStream());

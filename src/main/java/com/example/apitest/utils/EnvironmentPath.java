@@ -21,6 +21,25 @@ public class EnvironmentPath {
 
     private static volatile EnvironmentPath instance;
 
+    private String EdgedetectionExeFilePath; // /anaconda/bin/python  ./UNet3_plus-main/eval_img.py --output_folder ./output --checkpoint checkpoints/2022-07-28_22_18_11/chk_499.pth --img_path
+    private String OCRdetectionExeFilePath;
+
+    public String getEdgedetectionExeFilePath() {
+        return EdgedetectionExeFilePath;
+    }
+
+    public void setEdgedetectionExeFilePath(String edgedetectionExeFilePath) {
+        EdgedetectionExeFilePath = edgedetectionExeFilePath;
+    }
+
+    public String getOCRdetectionExeFilePath() {
+        return OCRdetectionExeFilePath;
+    }
+
+    public void setOCRdetectionExeFilePath(String OCRdetectionExeFilePath) {
+        this.OCRdetectionExeFilePath = OCRdetectionExeFilePath;
+    }
+
     // python的exe的路径
     private String pythonExEPath;
     // 检测算法的python文件的路径
@@ -81,6 +100,8 @@ public class EnvironmentPath {
         }
         Element rootElement = document.getRootElement();
         this.pythonExEPath = rootElement.element("pythonExEPath").getStringValue();
+        this.EdgedetectionExeFilePath = rootElement.element("EdgedetectionExeFilePath").getStringValue();
+        this.OCRdetectionExeFilePath = rootElement.element("OCRdetectionExeFilePath").getStringValue();
         this.detectionPythonFilePath = rootElement.element("detectionPythonFilePath").getStringValue();
         this.retrainPythonFilePath = rootElement.element("retrainPythonFilePath").getStringValue();
         this.xmlToTxtPythonFilePath = rootElement.element("xmlToTxtPythonFilePath").getStringValue();

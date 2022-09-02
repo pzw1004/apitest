@@ -25,4 +25,17 @@ public class MyService {
     public void tttt(){
         System.out.println("------------------");
     }
+
+
+    public void training(){
+        trainingThread th = new trainingThread();
+        Thread t1 = new Thread(th);
+        t1.start();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }
