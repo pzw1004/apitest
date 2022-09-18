@@ -159,8 +159,10 @@ public class ExecuteAlgorithmService {
         ResultFromDetection resultFromDetection = new ResultFromDetection();
         String[] resPerCategories = null;
         String[] beliefs = null;
+        String[] lengths = null;
         String[][] res = null;
         String[][] res2 = null;
+        String[][] res3 = null;
 //        String line = "";
         // 执行python脚本   H:\Anaconda\Anaconda3\envs\welddetection\python.exe H:\LabelProject\code\PyTorch-YOLOv3-master\detect_oneImage.py E:\IDEA\apitest\src\main\resources\static\\upload\1332420190611043817.tif
         long startTime =  System.currentTimeMillis();
@@ -212,8 +214,22 @@ public class ExecuteAlgorithmService {
                         System.out.println(res2[j][i]);
                     }
                 }
+
+                System.out.println("===下面是这个缺陷的长度===========================================");
+                lengths = allOfData[2].split("-");
+//                System.out.println(resPerCategories.length);
+//                System.out.println(resPerCategories[resPerCategories.length - 1] == null);
+                res3 = new String[lengths.length][];
+                for (int j = 0; j < lengths.length; j++){
+                    res3[j] = lengths[j].split(":");
+                    for (int i = 0; i < res3[j].length; i++) {
+                        System.out.println("第"+(i+1)+"个点:");
+                        System.out.println(res3[j][i]);
+                    }
+                }
                 resultFromDetection.setPosition(res);
                 resultFromDetection.setBelief(res2);
+                resultFromDetection.setFlawLength(res3);
                 // 没有belief的版本
 //                res = new String[resPerCategories.length][];
 //                for (int j = 0; j < resPerCategories.length; j++){

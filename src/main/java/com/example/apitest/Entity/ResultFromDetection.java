@@ -3,8 +3,11 @@ package com.example.apitest.Entity;
 public class ResultFromDetection {
     public String[][] position;
     public String[][] belief;
+    public String[][] flawLength;
     public String houdu;
-    public String[] edge; 
+    public String[] edge;
+
+
     public String[][] getPosition() {
         return position;
     }
@@ -20,6 +23,14 @@ public class ResultFromDetection {
     public void setBelief(String[][] belief) {
         this.belief = belief;
     }
+
+    public String[][] getFlawLength(){
+        return flawLength;
+    }
+    public void setFlawLength(String[][] flawLength){
+        this.flawLength = flawLength;
+    }
+
     public void setHoudu(String houdu)
     {
         this.houdu = houdu;
