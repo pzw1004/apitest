@@ -1,6 +1,7 @@
 package com.example.apitest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.apitest.Service.ExecuteAlgorithmService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,13 @@ public class ApitestApplicationTests {
         JSONObject jsonObject = JSONObject.parseObject(obj);
         System.out.println(jsonObject);
     }
-
+    @Test
+    public void testSavePic(){
+        ExecuteAlgorithmService executeAlgorithmService = new ExecuteAlgorithmService();
+        String path = "D:/FlawSegmentation/PSPNet/";
+        String fileName = "183.png";
+        String points = "1,1 2,2 3,3 4,4----";
+        executeAlgorithmService.savePic(path,fileName,points);
+    }
 }
 

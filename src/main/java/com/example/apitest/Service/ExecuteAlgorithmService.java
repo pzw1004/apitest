@@ -59,6 +59,31 @@ public class ExecuteAlgorithmService {
 //    this.OCRdetectionExeFilePath = null; // TODO:通过配置文件读取python解释器路径和OCR检测文件。
     }
 
+    public void savePic(String path,String fileName,String points){
+        String pythonExE = "E:/Anaconda/envs/lpf/python.exe";
+        String action ="D:/FlawSegmentation/PSPNet/pic_save.py";
+//        String action ="D:/FlawSegmentation/PSPNet/test_interface.py";
+        String args = pythonExE+" "+action+" "+"--dir_path"+" "+path+" "+"--pic_name"+" "+fileName+" "+"--flaws"+" "+points;
+        System.out.println(args);
+//        String args = "E:/Anaconda/envs/lpf/python.exe D:/FlawSegmentation/PSPNet/test_interface.py";
+        try {
+//            System.out.println("test");
+            Process pr = Runtime.getRuntime().exec(args);
+            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
+            LineNumberReader in = new LineNumberReader(ir);
+            String line;
+//            System.out.println(in.readLine());
+            while ((line = in.readLine()) != null) {
+                System.out.println(line);
+            }
+//
+        }catch (IOException e) {
+            System.out.println("保存错误");
+
+        }
+    }
+
+
     /**
      *
      * @param filePath 需要检测的图像完整路径
