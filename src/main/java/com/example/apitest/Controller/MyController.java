@@ -410,5 +410,35 @@ public class MyController {
         return JSONObject.parseObject(ss);
     }
 
+    //保存单张图片
+    @PostMapping("/savePic")
+    @ResponseBody
+    public String saveSignalPic(@RequestParam("file") MultipartFile file, @RequestParam("label_info") String label_info) throws IOException{
+
+        String flawInformation = label_info;
+        String saveFileName = executeAlgorithmService.getRandomFileName() + ".png";
+        String saveFolder = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\upload\\";
+        File saveFile = new File( saveFolder + saveFileName);
+
+        if (!saveFile.getParentFile().exists()) {
+            saveFile.getParentFile().mkdirs();
+        }
+        try {
+            System.out.println(saveFileName);
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
+            out.write(file.getBytes());
+            System.out.print(file.getBytes());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return "error";
+        }
+        executeAlgorithmService.savePic(saveFolder,saveFileName,flawInformation);
+
+
+        return "success";
+    }
 
 }
