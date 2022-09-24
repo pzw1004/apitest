@@ -457,6 +457,45 @@ public class RetrainModelService {
         isTraining = training;
     }
 
+    //重训练方法
+    public void retrainNew(String imgsPath,String imgsMask){
+        String pythonExE = "E:/Anaconda/envs/lpf/python.exe";
+        String action ="D:/FlawSegmentation/PSPNet/retrain.py";
+        String args = pythonExE+" "+action+" "+imgsPath+" "+imgsMask;
+        System.out.println(args);
+//        String args = "E:/Anaconda/envs/lpf/python.exe D:/FlawSegmentation/PSPNet/test_interface.py";
+        try {
+//            System.out.println("test");
+            Process pr = Runtime.getRuntime().exec(args);
+//            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
+//            LineNumberReader in = new LineNumberReader(ir);
+//            String line;
+////            System.out.println(in.readLine());
+//            while ((line = in.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//
+        }catch (IOException e) {
+            System.out.println("重训练失败");
 
-
+        }
+    }
+    //检测当前训练轮数
+    public int checkEpoch(String path){
+        File file = new File(path);
+        StringBuilder result = new StringBuilder();
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(file));//构造一个BufferedReader类来读取文件
+            String s = null;
+            while((s = br.readLine())!=null){//使用readLine方法，一次读一行
+                result.append(s);
+            }
+            br.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        String s = result.toString();
+//        System.out.println(s);
+        return Integer.valueOf(s);
+    }
 }

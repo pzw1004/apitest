@@ -2,6 +2,7 @@ package com.example.apitest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.apitest.Service.ExecuteAlgorithmService;
+import com.example.apitest.Service.RetrainModelService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,20 @@ public class ApitestApplicationTests {
         String fileName = "183.png";
         String points = "1,1 2,2 3,3 4,4----";
         executeAlgorithmService.savePic(path,fileName,points);
+    }
+
+//    @Test
+//    public void testRetrain(){
+//        ExecuteAlgorithmService executeAlgorithmService = new ExecuteAlgorithmService();
+//        String imgsPath = "aaaaa";
+//        String dstPath = "bbbbb";
+//        executeAlgorithmService.retrainNew(imgsPath,dstPath);
+//    }
+    @Test
+    public void testCheckEpoch(){
+        RetrainModelService retrainModelService = new RetrainModelService();
+        String path = "D:\\FlawSegmentation\\PSPNet\\1.txt";
+        System.out.println(retrainModelService.checkEpoch(path));
     }
 }
 

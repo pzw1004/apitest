@@ -441,4 +441,23 @@ public class MyController {
         return "success";
     }
 
+    //重训练方法
+    @PostMapping("/retrainNew")
+    @ResponseBody
+    public String retrainNew(){
+        String imgsPath = "";
+        String masksPath = "";
+        retrainModelService.retrainNew(imgsPath,masksPath);
+        return "success";
+    }
+
+    //读取重训练进度
+    @PostMapping("/getEpochs")
+    @ResponseBody
+    public int getCurEpochs(){
+        String path = "";
+        int epoch = retrainModelService.checkEpoch(path);
+        return epoch;
+    }
+
 }
