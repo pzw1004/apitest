@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -457,16 +458,46 @@ public class RetrainModelService {
         isTraining = training;
     }
 
+    public String testPr()  {
+        String args = "E:/Anaconda/envs/lpf/python.exe D:/FlawSegmentation/PSPNet/test_interface.py";
+        Process pr = null;
+        String a = "";
+        try {
+            pr = Runtime.getRuntime().exec(args);
+//            String s = pr.getClass("handle",java.lang.ProcessImpl.class);
+//            pr.forClass("handle");
+//            a = String.valueOf(pr.getClass());
+//            a = pr.toString();
+//
+//            pr.
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return a;
+    }
+
     //重训练方法
-    public void retrainNew(String imgsPath,String imgsMask){
+    public Process retrainNew(String imgsPath,String imgsMask){
         String pythonExE = "E:/Anaconda/envs/lpf/python.exe";
         String action ="D:/FlawSegmentation/PSPNet/retrain.py";
         String args = pythonExE+" "+action+" "+imgsPath+" "+imgsMask;
+        Process pr = null;
         System.out.println(args);
 //        String args = "E:/Anaconda/envs/lpf/python.exe D:/FlawSegmentation/PSPNet/test_interface.py";
         try {
 //            System.out.println("test");
-            Process pr = Runtime.getRuntime().exec(args);
+                pr = Runtime.getRuntime().exec(args);
+//            String a = pr.getClass().getName();
+//            String s =java.lang.Runtime.getRuntime().getClass().getName();
+//            long pid = -1;
+//            String s = pr.javaClass.name;
+//            Class<?> clazz = Class.forName("java.lang.ProcessImpl");
+//            Field filed = clazz.getDeclaredField("pid");
+//            filed.setAccessible(true);
+//            pid = (Integer)filed.get(p)
+//            pr.exitValue();
+//            String pidAndName = pr.javaClass.get;
 //            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
 //            LineNumberReader in = new LineNumberReader(ir);
 //            String line;
@@ -477,8 +508,11 @@ public class RetrainModelService {
 //
         }catch (IOException e) {
             System.out.println("重训练失败");
-
         }
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+        return pr;
     }
     //检测当前训练轮数
     public int checkEpoch(String path){

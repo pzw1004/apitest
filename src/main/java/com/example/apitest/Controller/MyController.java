@@ -55,7 +55,7 @@ public class MyController {
 //        return uploadFolderPath;
 //    }
 
-
+    Process pr = null;
     @GetMapping("/test")
     public String  Test(){
 //        String xmlFolderPath = "H:\\LabelProject\\20190516\\dataset_stage1\\augtif\\retrainTestData\\xmlTest";
@@ -447,7 +447,7 @@ public class MyController {
     public String retrainNew(){
         String imgsPath = "";
         String masksPath = "";
-        retrainModelService.retrainNew(imgsPath,masksPath);
+        pr = retrainModelService.retrainNew(imgsPath,masksPath);
         return "success";
     }
 
@@ -460,4 +460,11 @@ public class MyController {
         return epoch;
     }
 
+//    暂停重训练
+    @PostMapping("/destroyTrain")
+    @ResponseBody
+    public String destroyTrain(){
+        pr.destroy();
+        return "success";
+    }
 }
