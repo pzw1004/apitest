@@ -48,5 +48,11 @@ public class ApitestApplicationTests {
         String path = "D:\\FlawSegmentation\\PSPNet\\1.txt";
         System.out.println(retrainModelService.checkEpoch(path));
     }
+    @Test
+    public void testTest(){
+        RetrainModelService retrainModelService = new RetrainModelService();
+        String res = retrainModelService.testPr();
+        System.out.println(res);
+    }
 }
 
