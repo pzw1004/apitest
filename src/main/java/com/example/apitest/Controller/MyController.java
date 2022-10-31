@@ -7,6 +7,7 @@ import com.example.apitest.Entity.ResultFromDetection;
 import com.example.apitest.Service.ExecuteAlgorithmService;
 import com.example.apitest.Service.MyService;
 import com.example.apitest.Service.RetrainModelService;
+import com.example.apitest.Service.trainingThread;
 import com.example.apitest.mapper.DamageImageMapper;
 import com.example.apitest.mapper.ModelMapper;
 import com.example.apitest.utils.EnvironmentPath;
@@ -48,6 +49,8 @@ public class MyController {
     @Autowired
     private MyService myService;
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    public trainingThread tr ;
 //    @GetMapping("/checkUploadPath")
 //    @ResponseBody
 //    public String checkUploadPath() {
@@ -90,19 +93,19 @@ public class MyController {
  //       return"success";
  //   }
 
-    @PostMapping("/retrainT")
-    public boolean retrainT(){
-        retrainModelService.setTrainingF(true,0);
-        return retrainModelService.isTraining();
-
-    }
-
-    @PostMapping("/retrainF")
-    public boolean retrainF(){
-        retrainModelService.setTrainingF(false,1);
-        return retrainModelService.isTraining();
-
-    }
+//    @PostMapping("/retrainT")
+//    public boolean retrainT(){
+//        retrainModelService.setTrainingF(true,0);
+//        return retrainModelService.isTraining();
+//
+//    }
+//
+//    @PostMapping("/retrainF")
+//    public boolean retrainF(){
+//        retrainModelService.setTrainingF(false,1);
+//        return retrainModelService.isTraining();
+//
+//    }
     /**
      * 重新训练模型的接口
      * @return ReturnMessage类型的执行结果
@@ -267,7 +270,7 @@ public class MyController {
     //修改：返回值与res类别
     @PostMapping("/detectuploadfile_v2")
     @ResponseBody
-    public ResultFromDetection upload_v2(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+    public ResultFromDetection upload_v2(@RequestParam("file") MultipartFile file, HttpServletRequest request,int width) throws IOException {
         System.out.println("调用//upload接口中的参数");
 
         ResultFromDetection res = null;
@@ -307,7 +310,7 @@ public class MyController {
 //                return message;
                 return res;
             }
-            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
+            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName,width);
 //            System.out.println(message.getJsonData().toString());
 //            if (saveFile.exists() && saveFile.isFile()){
 //                if (saveFile.delete()) {
@@ -347,7 +350,7 @@ public class MyController {
 //                return message;
                  return res;
             }
-            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
+            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName,width);
 //            System.out.println("=========controller=============");
 //            System.out.println(line);
 //            System.out.println(message.getJsonData().toString());
@@ -386,7 +389,7 @@ public class MyController {
 //                return message;
                 return res;
             }
-            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
+            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName,width);
 //            System.out.println("=========controller=============");
 //            System.out.println(line);
 //            System.out.println(message.getJsonData().toString());
@@ -445,9 +448,9 @@ public class MyController {
     @PostMapping("/retrainNew")
     @ResponseBody
     public String retrainNew(){
-        String imgsPath = "";
-        String masksPath = "";
-        pr = retrainModelService.retrainNew(imgsPath,masksPath);
+        String imgsPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_imgs";
+        String masksPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_masks";
+        tr = retrainModelService.retrainNew(imgsPath,masksPath);
         return "success";
     }
 
@@ -455,16 +458,40 @@ public class MyController {
     @PostMapping("/getEpochs")
     @ResponseBody
     public int getCurEpochs(){
-        String path = "";
+        String path = "D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.txt";
         int epoch = retrainModelService.checkEpoch(path);
         return epoch;
     }
+    @RequestMapping ("/getReTrainDataNum")
+    @ResponseBody
+    public int getReTrainDataNum(){
+        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
+        File file = new File(path);// 图片存放路径
+        File list[] = file.listFiles();
+        return list.length;
+    }
 
-//    暂停重训练
+    //    暂停重训练
     @PostMapping("/destroyTrain")
     @ResponseBody
-    public String destroyTrain(){
-        pr.destroy();
+    public String destroyTrain() throws IOException {
+        tr.stop();
+        retrainModelService.isTraining = false;
         return "success";
+    }
+
+    @RequestMapping("RecentNewImgs")
+    @ResponseBody
+    public String[] RecentNewImgs() throws IOException {
+        int limit_number = 5;
+        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
+        File file = new File(path);// 图片存放路径
+        File list[] = file.listFiles();
+        int max = limit_number<list.length ? limit_number : list.length;
+        String res[] = new String[max];
+        for(int i=0;i<max;i++){
+            res[i] = list[i].getAbsolutePath();
+        }
+        return res;
     }
 }

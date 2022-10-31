@@ -446,17 +446,17 @@ public class RetrainModelService {
     public void setTraining(boolean training){
         isTraining = training;
     }
-    public void setTrainingF(boolean training , int type) {
-        if(type == 0){
-            //开始线程
-            trainThread = new trainingThread();
-            trainThread.start();
-        }
-        else{
-            trainThread.stop();
-        }
-        isTraining = training;
-    }
+//    public void setTrainingF(boolean training , int type) {
+//        if(type == 0){
+//            //开始线程
+//            trainThread = new trainingThread();
+//            trainThread.start();
+//        }
+//        else{
+//            trainThread.stop();
+//        }
+//        isTraining = training;
+//    }
 
     public String testPr()  {
         String args = "E:/Anaconda/envs/lpf/python.exe D:/FlawSegmentation/PSPNet/test_interface.py";
@@ -478,16 +478,18 @@ public class RetrainModelService {
     }
 
     //重训练方法
-    public Process retrainNew(String imgsPath,String imgsMask){
-        String pythonExE = "E:/Anaconda/envs/lpf/python.exe";
-        String action ="D:/FlawSegmentation/PSPNet/retrain.py";
-        String args = pythonExE+" "+action+" "+imgsPath+" "+imgsMask;
+    public trainingThread retrainNew(String imgsPath,String imgsMask){
+        String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
+        String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.py";
+        String args = "conda activate ML_env && " + pythonExE+" "+action+" "+imgsPath+" "+imgsMask;
+        String[] cmd = {"cmd","/C",args};
         Process pr = null;
         System.out.println(args);
 //        String args = "E:/Anaconda/envs/lpf/python.exe D:/FlawSegmentation/PSPNet/test_interface.py";
-        try {
-//            System.out.println("test");
-                pr = Runtime.getRuntime().exec(args);
+        //            System.out.println("test");
+//                pr = Runtime.getRuntime().exec(args);
+        trainingThread th = new trainingThread(cmd);
+        th.start();
 //            String a = pr.getClass().getName();
 //            String s =java.lang.Runtime.getRuntime().getClass().getName();
 //            long pid = -1;
@@ -506,13 +508,11 @@ public class RetrainModelService {
 //                System.out.println(line);
 //            }
 //
-        }catch (IOException e) {
-            System.out.println("重训练失败");
-        }
-//        } catch (ClassNotFoundException e) {
+        //        } catch (ClassNotFoundException e) {
 //            e.printStackTrace();
 //        }
-        return pr;
+        isTraining = true;
+        return th;
     }
     //检测当前训练轮数
     public int checkEpoch(String path){

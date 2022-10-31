@@ -60,8 +60,8 @@ public class ExecuteAlgorithmService {
     }
 
     public void savePic(String path,String fileName,String points){
-        String pythonExE = "E:/Anaconda/envs/lpf/python.exe";
-        String action ="D:/FlawSegmentation/PSPNet/pic_save.py";
+        String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
+        String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\pic_save.py";
 //        String action ="D:/FlawSegmentation/PSPNet/test_interface.py";
         String args = pythonExE+" "+action+" "+"--dir_path"+" "+path+" "+"--pic_name"+" "+fileName+" "+"--flaws"+" "+points;
         System.out.println(args);
@@ -178,7 +178,7 @@ public class ExecuteAlgorithmService {
 
     }
 
-    public ResultFromDetection excute_v2(String filePath){
+    public ResultFromDetection excute_v2(String filePath,int width){
 
 //        DamageDetectMessage message = new DamageDetectMessage();
         ResultFromDetection resultFromDetection = new ResultFromDetection();
@@ -195,7 +195,7 @@ public class ExecuteAlgorithmService {
         logger.info("---开始执行缺陷检测脚本---");
         Runtime mt =Runtime.getRuntime();
 
-        String args = detectionExeFilePath + " " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String args = detectionExeFilePath + " " + filePath+ " "+width;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         try {
             Process pr = mt.exec(args);
             System.out.println(args+'\n');
