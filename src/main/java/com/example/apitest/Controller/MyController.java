@@ -57,6 +57,14 @@ public class MyController {
 //
 //        return uploadFolderPath;
 //    }
+    /**
+     * 全局路径配置
+     *
+     */
+    String imgsPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_imgs";
+    String masksPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_masks";
+    String epochNum_path = "D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.txt";
+    String retrainColor_path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
 
     Process pr = null;
     @GetMapping("/test")
@@ -448,8 +456,8 @@ public class MyController {
     @PostMapping("/retrainNew")
     @ResponseBody
     public String retrainNew(){
-        String imgsPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_imgs";
-        String masksPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_masks";
+//        imgsPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_imgs";
+//        masksPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_masks";
         tr = retrainModelService.retrainNew(imgsPath,masksPath);
         return "success";
     }
@@ -458,15 +466,15 @@ public class MyController {
     @PostMapping("/getEpochs")
     @ResponseBody
     public int getCurEpochs(){
-        String path = "D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.txt";
-        int epoch = retrainModelService.checkEpoch(path);
+//        String path = "D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.txt";
+        int epoch = retrainModelService.checkEpoch(epochNum_path);
         return epoch;
     }
     @RequestMapping ("/getReTrainDataNum")
     @ResponseBody
     public int getReTrainDataNum(){
-        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
-        File file = new File(path);// 图片存放路径
+//        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
+        File file = new File(retrainColor_path);// 图片存放路径
         File list[] = file.listFiles();
         return list.length;
     }
@@ -484,8 +492,8 @@ public class MyController {
     @ResponseBody
     public String[] RecentNewImgs() throws IOException {
         int limit_number = 5;
-        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
-        File file = new File(path);// 图片存放路径
+//        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
+        File file = new File(retrainColor_path);// 图片存放路径
         File list[] = file.listFiles();
         int max = limit_number<list.length ? limit_number : list.length;
         String res[] = new String[max];

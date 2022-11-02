@@ -29,6 +29,17 @@ public class ExecuteAlgorithmService {
     private String EdgedetectionExeFilePath; // /anaconda/bin/python  ./UNet3_plus-main/eval_img.py --output_folder ./output --checkpoint checkpoints/2022-07-28_22_18_11/chk_499.pth --img_path
     private String OCRdetectionExeFilePath; // /anaconda/bin/python  ./yolov5-master/detect.py --weights runs/best_exp/weights/best.pt --imgsz 640 --hide-conf --exist-ok --source 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     *
+     * 全局路径配置
+     */
+    String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
+    String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\pic_save.py";
+    String orc_cmd_head ="cmd /c cd D: && conda activate ML_env"+"&&";
+//    String args_ocr = "cmd /c cd D: && conda activate ML_env"+"&&" + OCRdetectionExeFilePath + " " +"--source" +" "+ filePath;
+    String edge_cmd_head ="cmd /c cd D: && conda activate ML_env"+"&&";
+//        String args_edge = "cmd /c cd D: && conda activate ML_env"+"&&" +EdgedetectionExeFilePath + " --img_path "
     public ExecuteAlgorithmService() {
         this.detectionExeFilePath = EnvironmentPath.getInstance().getPythonExEPath() +
                 " "+ EnvironmentPath.getInstance().getDetectionPythonFilePath();
@@ -60,8 +71,8 @@ public class ExecuteAlgorithmService {
     }
 
     public void savePic(String path,String fileName,String points){
-        String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
-        String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\pic_save.py";
+//        String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
+//        String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\pic_save.py";
 //        String action ="D:/FlawSegmentation/PSPNet/test_interface.py";
         String args = pythonExE+" "+action+" "+"--dir_path"+" "+path+" "+"--pic_name"+" "+fileName+" "+"--flaws"+" "+points;
         System.out.println(args);
@@ -307,7 +318,7 @@ public class ExecuteAlgorithmService {
 
         logger.info("---开始执行OCR脚本---");
         Runtime mt_ocr =Runtime.getRuntime();
-        String args_ocr = "cmd /c cd D: && conda activate ML_env"+"&&" + OCRdetectionExeFilePath + " " +"--source" +" "+ filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String args_ocr = orc_cmd_head+ OCRdetectionExeFilePath + " " +"--source" +" "+ filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         String houdu = null;
         try {
             Process pr1 = mt_ocr.exec(args_ocr);
@@ -343,7 +354,7 @@ public class ExecuteAlgorithmService {
 
         logger.info("---开始执行边缘检测脚本---");
         Runtime mt_edge =Runtime.getRuntime();
-        String args_edge = "cmd /c cd D: && conda activate ML_env"+"&&" +EdgedetectionExeFilePath + " --img_path " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String args_edge = edge_cmd_head +EdgedetectionExeFilePath + " --img_path " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         
         try {
             Process pr = mt_edge.exec(args_edge);
