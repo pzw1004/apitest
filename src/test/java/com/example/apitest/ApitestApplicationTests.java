@@ -26,33 +26,33 @@ public class ApitestApplicationTests {
         JSONObject jsonObject = JSONObject.parseObject(obj);
         System.out.println(jsonObject);
     }
-    @Test
-    public void testSavePic(){
-        ExecuteAlgorithmService executeAlgorithmService = new ExecuteAlgorithmService();
-        String path = "D:/FlawSegmentation/PSPNet/";
-        String fileName = "183.png";
-        String points = "1,1 2,2 3,3 4,4----";
-        executeAlgorithmService.savePic(path,fileName,points);
-    }
-
 //    @Test
-//    public void testRetrain(){
+//    public void testSavePic(){
 //        ExecuteAlgorithmService executeAlgorithmService = new ExecuteAlgorithmService();
-//        String imgsPath = "aaaaa";
-//        String dstPath = "bbbbb";
-//        executeAlgorithmService.retrainNew(imgsPath,dstPath);
+//        String path = "D:/FlawSegmentation/PSPNet/";
+//        String fileName = "183.png";
+//        String points = "1,1 2,2 3,3 4,4----";
+//        executeAlgorithmService.savePic(path,fileName,points);
 //    }
-    @Test
-    public void testCheckEpoch(){
-        RetrainModelService retrainModelService = new RetrainModelService();
-        String path = "D:\\FlawSegmentation\\PSPNet\\1.txt";
-        System.out.println(retrainModelService.checkEpoch(path));
-    }
-    @Test
-    public void testTest(){
-        RetrainModelService retrainModelService = new RetrainModelService();
-        String res = retrainModelService.testPr();
-        System.out.println(res);
-    }
+//
+////    @Test
+////    public void testRetrain(){
+////        ExecuteAlgorithmService executeAlgorithmService = new ExecuteAlgorithmService();
+////        String imgsPath = "aaaaa";
+////        String dstPath = "bbbbb";
+////        executeAlgorithmService.retrainNew(imgsPath,dstPath);
+////    }
+//    @Test
+//    public void testCheckEpoch(){
+//        RetrainModelService retrainModelService = new RetrainModelService();
+//        String path = "D:\\FlawSegmentation\\PSPNet\\1.txt";
+//        System.out.println(retrainModelService.checkEpoch(path));
+//    }
+//    @Test
+//    public void testTest(){
+//        RetrainModelService retrainModelService = new RetrainModelService();
+//        String res = retrainModelService.testPr();
+//        System.out.println(res);
+//    }
 }
 

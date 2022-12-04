@@ -64,8 +64,11 @@ public class RetrainModelService {
      * 全局路径配置
      */
     String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
+//    String pythonExE = "D:\\Anaconda\\envs\\bochuan\\python.exe";
     String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.py";
+//    String action ="D:\\hanfeng\\unet\\retrain.py";
     String env_name = "ML_env";
+//    String env_name = "bochuan";
 
 
     public RetrainModelService(){
@@ -488,7 +491,7 @@ public class RetrainModelService {
     public trainingThread retrainNew(String imgsPath,String imgsMask){
 //        String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
 //        String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.py";
-        String args = "conda activate"+ env_name +" && " + pythonExE+" "+action+" "+imgsPath+" "+imgsMask;
+        String args = "conda activate "+ env_name +" && " + pythonExE+" "+action+" "+imgsPath+" "+imgsMask;
         String[] cmd = {"cmd","/C",args};
         Process pr = null;
         System.out.println(args);

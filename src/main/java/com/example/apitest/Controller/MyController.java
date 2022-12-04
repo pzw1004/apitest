@@ -62,9 +62,13 @@ public class MyController {
      *
      */
     String imgsPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_imgs";
+//    String imgsPath = "D:\\hanfeng\\back\\src\\main\\resources\\static\\upload\\retrain_imgs";
     String masksPath = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_masks";
+//    String masksPath = "D:\\hanfeng\\back\\src\\main\\resources\\static\\upload\\retrain_masks";
     String epochNum_path = "D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\retrain.txt";
+//    String epochNum_path = "D:\\hanfeng\\unet\\retrain.txt";
     String retrainColor_path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
+//    String retrainColor_path = "D:\\hanfeng\\back\\src\\main\\resources\\static\\upload\\retrain_colors";
 
     Process pr = null;
     @GetMapping("/test")
@@ -278,12 +282,8 @@ public class MyController {
     //修改：返回值与res类别
     @PostMapping("/detectuploadfile_v2")
     @ResponseBody
-    public ResultFromDetection upload_v2(@RequestParam("file") MultipartFile file, HttpServletRequest request,int width) throws IOException {
-        System.out.println("调用//upload接口中的参数");
-
+    public ResultFromDetection upload_v2(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
         ResultFromDetection res = null;
-//        String line = "";
-
         System.out.println(file.getSize());
         if (file.isEmpty() ) {
             // 如果文件是空文件，
@@ -291,8 +291,14 @@ public class MyController {
 //            message.setInfo("检测失败，上传文件非法");
 //            return message;
             return null;
-
         }
+//        else{
+//            String saveFolder = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\upload\\";
+//            String saveFileName = executeAlgorithmService.getRandomFileName() + file.getOriginalFilename();
+//            file.transferTo(new File(saveFolder+saveFileName));
+//            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
+//            return res;
+//        }
         else if( file.getOriginalFilename().endsWith(".jpg"))
         {
             String OriginalFileName = file.getOriginalFilename();
@@ -313,24 +319,9 @@ public class MyController {
                 out.close();
             } catch (Exception e) {
                 e.printStackTrace();
-//                message.setStatus(false);
-//                message.setInfo(e.getMessage());
-//                return message;
                 return res;
             }
-            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName,width);
-//            System.out.println(message.getJsonData().toString());
-//            if (saveFile.exists() && saveFile.isFile()){
-//                if (saveFile.delete()) {
-//                    System.out.println("删除单个文件" + saveFileName + "成功！");
-//                } else {
-//                    System.out.println("删除单个文件" + saveFileName + "失败！");
-//                }
-//            }else {
-//                System.out.println("删除单个文件失败：" + saveFileName + "不存在！");
-//            }
-//            System.out.println("=========controller=============");
-//            System.out.println(res);
+            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
             return res;
         }
         else if (file.getOriginalFilename().endsWith(".png"))
@@ -339,7 +330,6 @@ public class MyController {
             String saveFileName = executeAlgorithmService.getRandomFileName() + ".png";
             //
             String saveFolder = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\upload\\";//"E:\\IDEA\\tools\\upload\\";
-            //String saveFolder = "A:\\pics\\";
             File saveFile = new File( saveFolder + saveFileName);
             if (!saveFile.getParentFile().exists()) {
                 saveFile.getParentFile().mkdirs();
@@ -353,24 +343,9 @@ public class MyController {
                 out.close();
             } catch (Exception e) {
                 e.printStackTrace();
-//                message.setStatus(false);
-//                message.setInfo(e.getMessage());
-//                return message;
                  return res;
             }
-            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName,width);
-//            System.out.println("=========controller=============");
-//            System.out.println(line);
-//            System.out.println(message.getJsonData().toString());
-//            if (saveFile.exists() && saveFile.isFile()){
-//                if (saveFile.delete()) {
-//                    System.out.println("删除单个文件" + saveFileName + "成功！");
-//                } else {
-//                    System.out.println("删除单个文件" + saveFileName + "失败！");
-//                }
-//            }else {
-//                System.out.println("删除单个文件失败：" + saveFileName + "不存在！");
-//            }
+            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
             return res;
         } else
         {
@@ -392,24 +367,9 @@ public class MyController {
                 out.close();
             } catch (Exception e) {
                 e.printStackTrace();
-//                message.setStatus(false);
-//                message.setInfo(e.getMessage());
-//                return message;
                 return res;
             }
-            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName,width);
-//            System.out.println("=========controller=============");
-//            System.out.println(line);
-//            System.out.println(message.getJsonData().toString());
-//            if (saveFile.exists() && saveFile.isFile()){
-//                if (saveFile.delete()) {
-//                    System.out.println("删除单个文件" + saveFileName + "成功！");
-//                } else {
-//                    System.out.println("删除单个文件" + saveFileName + "失败！");
-//                }
-//            }else {
-//                System.out.println("删除单个文件失败：" + saveFileName + "不存在！");
-//            }
+            res = executeAlgorithmService.excute_v2(saveFolder + saveFileName);
             return res;
         }
     }
@@ -493,7 +453,7 @@ public class MyController {
     public String[] RecentNewImgs() throws IOException {
         int limit_number = 5;
 //        String path = "D:\\work\\apitest\\src\\main\\resources\\static\\upload\\retrain_colors";
-        File file = new File(retrainColor_path);// 图片存放路径
+        File file = new File(imgsPath);// 图片存放路径
         File list[] = file.listFiles();
         int max = limit_number<list.length ? limit_number : list.length;
         String res[] = new String[max];

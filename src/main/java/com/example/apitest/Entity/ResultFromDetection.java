@@ -1,46 +1,33 @@
 package com.example.apitest.Entity;
 
+import java.util.List;
+
 public class ResultFromDetection {
-    public String[][] position;
-    public String[][] belief;
-    public String[][] flawLength;
-    public String houdu;
-    public String[] edge;
+    public List<String> position;
+    public List<String> flaw_type;
+    public List<String> beliefs;
 
-
-    public String[][] getPosition() {
+    public List<String> getPosition() {
         return position;
     }
 
-    public void setPosition(String[][] position) {
+    public void setPosition(List<String> position) {
         this.position = position;
     }
 
-    public String[][] getBelief() {
-        return belief;
+    public List<String> getFlaw_type() {
+        return flaw_type;
     }
 
-    public void setBelief(String[][] belief) {
-        this.belief = belief;
+    public void setFlaw_type(List<String> flaw_type) {
+        this.flaw_type = flaw_type;
     }
 
-    public String[][] getFlawLength(){
-        return flawLength;
-    }
-    public void setFlawLength(String[][] flawLength){
-        this.flawLength = flawLength;
+    public List<String> getBeliefs() {
+        return beliefs;
     }
 
-    public void setHoudu(String houdu)
-    {
-        this.houdu = houdu;
-    }
-    public String getHoudu()
-    {
-        return this.houdu;
-    }
-    public void setEdge(String[] all_edges)
-    {
-        this.edge = all_edges;
+    public void setBeliefs(List<String> beliefs) {
+        this.beliefs = beliefs;
     }
 }

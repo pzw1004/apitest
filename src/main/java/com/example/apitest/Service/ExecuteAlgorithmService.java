@@ -13,6 +13,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -34,10 +35,15 @@ public class ExecuteAlgorithmService {
      *
      * 全局路径配置
      */
+//    String pythonExE = "D:\\Anaconda\\envs\\bochuan\\python.exe";
     String pythonExE = "D:\\develop\\python\\Anconda3\\envs\\ML_env\\python.exe";
+    String detect_path = "D:\\work\\apitest_aiservice\\defect-YOLOv3\\pytorchyolo";
     String action ="D:\\work\\apitest_aiservice\\unet_nested_multiple_classification_master_src_resolution\\pic_save.py";
+//    String action ="D:\\hanfeng\\unet\\pic_save.py";
+//    String orc_cmd_head ="cmd /c cd D: && conda activate bochuan"+"&&";
     String orc_cmd_head ="cmd /c cd D: && conda activate ML_env"+"&&";
 //    String args_ocr = "cmd /c cd D: && conda activate ML_env"+"&&" + OCRdetectionExeFilePath + " " +"--source" +" "+ filePath;
+//    String edge_cmd_head ="cmd /c cd D: && conda activate bochuan"+"&&";
     String edge_cmd_head ="cmd /c cd D: && conda activate ML_env"+"&&";
 //        String args_edge = "cmd /c cd D: && conda activate ML_env"+"&&" +EdgedetectionExeFilePath + " --img_path "
     public ExecuteAlgorithmService() {
@@ -189,119 +195,47 @@ public class ExecuteAlgorithmService {
 
     }
 
-    public ResultFromDetection excute_v2(String filePath,int width){
-
-//        DamageDetectMessage message = new DamageDetectMessage();
+    public ResultFromDetection excute_v2(String filePath){
         ResultFromDetection resultFromDetection = new ResultFromDetection();
-        String[] resPerCategories = null;
-        String[] beliefs = null;
-        String[] lengths = null;
-        String[][] res = null;
-        String[][] res2 = null;
-        String[][] res3 = null;
-//        String line = "";
-        // 执行python脚本   H:\Anaconda\Anaconda3\envs\welddetection\python.exe H:\LabelProject\code\PyTorch-YOLOv3-master\detect_oneImage.py E:\IDEA\apitest\src\main\resources\static\\upload\1332420190611043817.tif
+        List<String> position_list = new ArrayList<>();
+        List<String> flaw_type = new ArrayList<>();
+        List<String> beliefs = new ArrayList<>();
         long startTime =  System.currentTimeMillis();
 //        System.out.println("---------------------------------------------开始执行脚本---------------------------------------------");
         logger.info("---开始执行缺陷检测脚本---");
         Runtime mt =Runtime.getRuntime();
-
-        String args = detectionExeFilePath + " " + filePath+ " "+width;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
+        String args = "cmd /c D: && cd "+detect_path+" && D: && conda activate ML_env"+"&&" +detectionExeFilePath + " " + "--image "+filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
         try {
             Process pr = mt.exec(args);
             System.out.println(args+'\n');
-
             InputStreamReader ir = new InputStreamReader(pr.getInputStream());
             LineNumberReader in = new LineNumberReader(ir);
             String line;
-//            line = in.readLine();
-            //            System.out.println(in.readLine());
             while ((line = in.readLine()) != null) {
-//                {"x_min": 111.56450653076172, "y_min": 452.42237854003906, "x_max": 150.10369873046875,
-//                  "y_max": 476.8945617675781, "conf": 0.8893440365791321,
-//                      "cls_conf": 0.9999973773956299, "cls_pred": 0}
-                // TODO 注意！！！ 这里手动加了额外的可信度以便测试！！！！！
-//                line = line + "*0.9:0.8---";
-//                StringBuilder beliefAdds = new StringBuilder("*");
                 System.out.println("vvvvvvvvvvvvvvvvvvvv");
                 System.out.println(line);
                 System.out.println("^^^^^^^^^^^^^^^^^^^^");
-                String[] allOfData = line.split("\\*");  // *前为position, *后为belief
-                resPerCategories = allOfData[0].split("-");
-//                System.out.println(resPerCategories.length);
-//                System.out.println(resPerCategories[resPerCategories.length - 1] == null);
-                res = new String[resPerCategories.length][];
-                for (int j = 0; j < resPerCategories.length; j++){
-                    res[j] = resPerCategories[j].split(":");
-                    for (int i = 0; i < res[j].length; i++) {
-                        System.out.println("第"+(i+1)+"个点:");
-                        System.out.println(res[j][i]);
+                line = line.replace('[',' ');
+                line = line.replace(']',' ');
+                line = line.trim();
+                String[] linedata = line.split("\\s+");
+                for (int i=0 ; i<linedata.length;i++){
+                    int r = i % 6;
+                    if(r == 0){// new epoch
+                        int x1 = Math.round(Float.parseFloat(linedata[i]));
+                        int y1 = Math.round(Float.parseFloat(linedata[i+1]));
+                        int x2 = Math.round(Float.parseFloat(linedata[i+2]));
+                        int y2 = Math.round(Float.parseFloat(linedata[i+3]));
+                        String rect = x1+","+y1+" "+x2+","+y1+" "+x2+","+y2+" "+x1+","+y2;
+                        position_list.add(rect);
+                        flaw_type.add(linedata[i+5]);
+                        beliefs.add(linedata[i+4]);
                     }
                 }
-                System.out.println("===下面是这个点的可信度===========================================");
-                beliefs = allOfData[1].split("-");
-//                System.out.println(resPerCategories.length);
-//                System.out.println(resPerCategories[resPerCategories.length - 1] == null);
-                res2 = new String[beliefs.length][];
-                for (int j = 0; j < beliefs.length; j++){
-                    res2[j] = beliefs[j].split(":");
-                    for (int i = 0; i < res2[j].length; i++) {
-                        System.out.println("第"+(i+1)+"个点:");
-                        System.out.println(res2[j][i]);
-                    }
                 }
-
-                System.out.println("===下面是这个缺陷的长度===========================================");
-                lengths = allOfData[2].split("-");
-//                System.out.println(resPerCategories.length);
-//                System.out.println(resPerCategories[resPerCategories.length - 1] == null);
-                res3 = new String[lengths.length][];
-                for (int j = 0; j < lengths.length; j++){
-                    res3[j] = lengths[j].split(":");
-                    for (int i = 0; i < res3[j].length; i++) {
-                        System.out.println("第"+(i+1)+"个点:");
-                        System.out.println(res3[j][i]);
-                    }
-                }
-                resultFromDetection.setPosition(res);
-                resultFromDetection.setBelief(res2);
-                resultFromDetection.setFlawLength(res3);
-                // 没有belief的版本
-//                res = new String[resPerCategories.length][];
-//                for (int j = 0; j < resPerCategories.length; j++){
-//                    res[j] = resPerCategories[j].split(":");
-//                    for (int i = 0; i < res[j].length; i++) {
-//                        System.out.println("第"+(i+1)+"个点:");
-//                        System.out.println(res[j][i]);
-//                    }
-//                }
-
-//                res = line.split(":");
-//                for (int i = 0; i < res.length; i++) {
-//                    System.out.println("第"+(i+1)+"个点:");
-//                    System.out.println(res[i]);
-//                }
-
-//                if(line.startsWith("damage location")){
-
-//                    System.out.println("====2========");
-//                    String[] splited = line.split("@@");
-//                    System.out.println(splited);
-//                    JSONObject jsonObject = JSONObject.parseObject(splited[1]);
-//                    //  damage location x: ', x2 ,' y: ',y2
-//                    int x_min = jsonObject.getDouble("x_min").intValue();
-//                    int y_min = jsonObject.getDouble("y_min").intValue();
-//                    int x_max = jsonObject.getDouble("x_max").intValue();
-//                    int y_max = jsonObject.getDouble("y_max").intValue();
-////                    System.out.println("x_min:"+x_min+"y_min"+y_min+"x_max"+x_max+"y_max"+y_max);
-//                    DamageData dd = new DamageData(x_min,y_min,x_max,y_max,"Algorithm",
-//                            jsonObject.getInteger("cls_pred"),jsonObject.getDouble("conf"),jsonObject.getDouble("cls_conf"));
-//                    System.out.println(dd.toString());
-//                    message.getDamageDataList().add(dd);
-            }
-//                ddd = ddd.concat(line);
-//                System.out.println(line);
-//            }
+            resultFromDetection.setPosition(position_list);
+            resultFromDetection.setBeliefs(beliefs);
+            resultFromDetection.setFlaw_type(flaw_type);
             in.close();
             pr.waitFor();
             pr.destroy();
@@ -312,74 +246,6 @@ public class ExecuteAlgorithmService {
 
         } catch (IOException e) {
             logger.error("---执行检测算法的时候出错---");
-            logger.error(e.getMessage());
-        }
-
-
-        logger.info("---开始执行OCR脚本---");
-        Runtime mt_ocr =Runtime.getRuntime();
-        String args_ocr = orc_cmd_head+ OCRdetectionExeFilePath + " " +"--source" +" "+ filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
-        String houdu = null;
-        try {
-            Process pr1 = mt_ocr.exec(args_ocr);
-            System.out.println(args_ocr+'\n');
-
-            InputStreamReader ir1 = new InputStreamReader(pr1.getInputStream());
-            LineNumberReader in1 = new LineNumberReader(ir1);
-            in1.setLineNumber(3);
-            String line_ocr;
-            line_ocr=in1.readLine();
-            while((line_ocr=in1.readLine()) != null) // {"T":"18"}
-            {
-                System.out.println(line_ocr);
-                JSONObject json_houdu = JSON.parseObject(line_ocr);
-                houdu = json_houdu.get("T").toString();
-                resultFromDetection.setHoudu(houdu);
-            }
-
-
-            in1.close();
-            pr1.waitFor();
-            pr1.destroy();
-        }catch (InterruptedException e) {
-//
-            logger.error("---执行OCR算法的时候出错---");
-            logger.error(e.getMessage());
-
-        } catch (IOException e) {
-            logger.error("---执行OCR算法的时候出错---");
-            logger.error(e.getMessage());
-        }
-
-
-        logger.info("---开始执行边缘检测脚本---");
-        Runtime mt_edge =Runtime.getRuntime();
-        String args_edge = edge_cmd_head +EdgedetectionExeFilePath + " --img_path " + filePath;//H:\LabelProject\20190102\3_channels\VIDARImage1.jpg
-        
-        try {
-            Process pr = mt_edge.exec(args_edge);
-            System.out.println(args_edge+'\n');
-
-            InputStreamReader ir = new InputStreamReader(pr.getInputStream());
-            LineNumberReader in = new LineNumberReader(ir);
-            String line_edge;
-            while((line_edge=in.readLine()) != null) // 121,244 122,244
-            {
-                String[] all_edges = line_edge.split(":");
-                resultFromDetection.setEdge(all_edges);
-            }
-
-
-            in.close();
-            pr.waitFor();
-            pr.destroy();
-        }catch (InterruptedException e) {
-//
-            logger.error("---执行OCR算法的时候出错---");
-            logger.error(e.getMessage());
-
-        } catch (IOException e) {
-            logger.error("---执行OCR算法的时候出错---");
             logger.error(e.getMessage());
         }
 
