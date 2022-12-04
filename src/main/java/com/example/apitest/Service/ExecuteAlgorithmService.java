@@ -211,7 +211,10 @@ public class ExecuteAlgorithmService {
             InputStreamReader ir = new InputStreamReader(pr.getInputStream());
             LineNumberReader in = new LineNumberReader(ir);
             String line;
+            String line2;
             while ((line = in.readLine()) != null) {
+                line2 = in.readLine();
+                line = line + line2;
                 System.out.println("vvvvvvvvvvvvvvvvvvvv");
                 System.out.println(line);
                 System.out.println("^^^^^^^^^^^^^^^^^^^^");
